@@ -33,11 +33,30 @@ navigator.mediaDevices.getUserMedia(constraints)
     recoder.addEventListener("stop",(e)=>{
         // conversin of media chunks to video.
         let blob = new Blob(chunks, {type: "video/mp4"});
-        let videoURL = URL.createObjectURL(blob);
-        let a = document.createElement("a");
-        a.href = videoURL;
-        a.download="stream.mp4";
-        a.click();
+        // let videoURL = URL.createObjectURL(blob); 
+
+        if(db){
+            let videoID = shortid();
+            
+            if (!videoID) {
+                console.error("Error generating video ID");
+                return;
+            }
+            let dbTransaction = db.transaction("video","readwrite");
+            let videoStore = dbTransaction.objectStore("video");
+            let videoEntry = { 
+                id: `vid-${videoID}`,
+                blobData: blob
+            }
+            videoStore.add(videoEntry);
+        }
+
+
+
+        // let a = document.createElement("a");
+        // a.href = videoURL;
+        // a.download="stream.mp4";
+        // a.click();
     })
 })
 
@@ -72,10 +91,27 @@ captureBtnCont.addEventListener("click",(e)=>{
 
     let imageURL = canvas.toDataURL();
 
-    let a = document.createElement("a");
-    a.href = imageURL;
-    a.download="image.jpg";
-    a.click();
+
+    if(db){
+        let imageID = shortid();
+        
+        if (!imageID) {
+            console.error("Error generating image ID");
+            return;
+        }
+        let dbTransaction = db.transaction("image","readwrite");
+        let imageStore = dbTransaction.objectStore("image");
+        let imageEntry = { 
+            id: `img-${imageID}`,
+            blobData: imageURL
+        }
+        imageStore.add(imageEntry);
+    }
+
+    // let a = document.createElement("a");
+    // a.href = imageURL;
+    // a.download="image.jpg";
+    // a.click();
 
 })
 

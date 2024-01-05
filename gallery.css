@@ -68,3 +68,6 @@ body{
     background-color: rgb(233,43,43);
 }
 
+.action-btn:hover{
+    cursor: pointer;
+}
